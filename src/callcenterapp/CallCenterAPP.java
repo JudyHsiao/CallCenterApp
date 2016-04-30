@@ -38,6 +38,18 @@ public class CallCenterAPP {
             threads[i] = new Thread(call);
             threads[i].start();
         }
+        
+        waitFor(threads);
+    }
+    
+    private static void waitFor( Thread [] threads ){
+        for (Thread thread : threads) {
+            try {
+                thread.join();
+            } catch (InterruptedException ex) {
+                System.out.print(ex);
+            }
+        }
     }
     
 }

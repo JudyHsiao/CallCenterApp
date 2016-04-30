@@ -48,18 +48,17 @@ public class CallCenter {
     */
     public boolean serveCall(Call call) {
         
-        if (dispatch (call, freshers)) {
+        if (dispatch (call, "fresher", freshers)) {
             return true;
         }
              
-        if (dispatch (call, TL)) {
+        if (dispatch (call, "TL", TL)) {
             return true;
         }
         
-        if (dispatch (call, PM)) {
+        if (dispatch (call, "PM", PM)) {
             return true;
         }
-        
         return false;
     }
     
@@ -72,22 +71,21 @@ public class CallCenter {
     * @return whether the call is soleved
     * @see Call
     */
-    private boolean dispatch (Call call, Queue<Employee> queue) {
+    private boolean dispatch (Call call, String typeName, Queue<Employee> queue) {
+        // take an employee from free list
         Employee answerer = queue.poll();
-        if ( answerer != null) {
-            System.out.printf("Employ(%s) answers the call(%d) \n",answerer.id, call.id);
-            if (answerer.solve(call)) {
-                queue.add(answerer);
-                System.out.printf("Employ(%s) ends the call(%d) \n",answerer.id, call.id);
-                return true;
-            } else {
-                queue.add(answerer);
-                System.out.printf("Employ(%s) ends the call(%d) \n",answerer.id, call.id);
-                return true;
-            }
-        }
         
+        if ( answerer != null) {
+            System.out.printf("Employee(%s) answers the call(%d) \n",answerer.id, call.id);
+            boolean result = answerer.solve(call);            
+            
+            // put pack the answerer to free list
+            queue.add(answerer);
+            System.out.printf("Employee(%s) ends the call(%d) \n",answerer.id, call.id);
+            return result;
+        } else{
+            System.out.printf("No %s available to answer the call(%d)\n", typeName, call.id);     
+        }
         return false;
     }
-    
 }
